@@ -1,17 +1,18 @@
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
-from functions import save
+from functions import save, upload_path
 
-app = Flask(__name__)
+app = Flask(__name__,
+ instance_relative_config=True, static_url_path=upload_path, static_folder=upload_path)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////images.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///images.db'
 app.config['MAX_CONTENT_LENGTH'] = 30 * 1024 * 1024
 #app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
 class Images(db.Model):
-    id = db.Column(db.BigInteger, primary_key=True)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
     image = db.Column(db.Text)
     small = db.Column(db.Text)
     medium = db.Column(db.Text)
@@ -23,7 +24,9 @@ class Images(db.Model):
         self.small = kwargs.get('small')
         self.large = kwargs.get('large')
         self.xlarge = kwargs.get('xlarge')
+        self.medium=kwargs.get('medium')
     
+db.create_all()
 
 @app.route('/upload', methods=["POST"])
 def upload():
@@ -36,12 +39,11 @@ def upload():
         db.session.add(image) 
         db.session.commit()
          
-        return "add images"
+        return "images added succefull"
     except Exception as e:
         print({'message': e})
         return "failed"
 
 
 if __name__ == "__main__":
-    db.create_all()
     app.run()

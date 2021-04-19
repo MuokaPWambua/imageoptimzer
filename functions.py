@@ -14,8 +14,8 @@ def image_extention(filename):
     ext = filename.rsplit('.', 1)[1].lower()
 
     if ext in exts:
-        print (filename)
         return True
+
     return False    
 
 def optimizer(image, size, extend_name):
@@ -27,7 +27,7 @@ def optimizer(image, size, extend_name):
         ext = filename.split('.')[-1]
         name = filename.split('.')[0]
 
-        filepath = f'{os.path.join(path, name)}-{extend_name}.{ext}'
+        filepath = f'{os.path.join(upload_path, name)}-{extend_name}.{ext}'
         
         #opening image for optimizing
 
@@ -42,11 +42,11 @@ def optimizer(image, size, extend_name):
 
         return urlpath
 
-    except Execption as e:
+    except Exception as e:
         print(e)
         
 
-def optimized():
+def optimized(image):
     # return an array of the image urlpaths in diffent sizes 
     thumb = 30, 30
     small = 320, 320
@@ -60,7 +60,6 @@ def optimized():
         medium_image = optimizer(image, medium, '640px')
         large_image = optimizer(image, large, '768px')
         xlarge_image = optimizer(image, xlarge, '1080px')
-        print ('resized and saved')
 
         return thumbnail, small_image, medium_image, large_image, xlarge_image
     except Exception as e:
