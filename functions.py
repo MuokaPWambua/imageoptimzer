@@ -8,12 +8,13 @@ from flask import request
 upload_path = os.path.abspath('uploads')
 
 
-def image_extenstion(filename):
+def image_extention(filename):
 # to check if image extenstion type
     exts = {'jpg', 'jpeg', 'png', 'ico', 'gif'}
     ext = filename.rsplit('.', 1)[1].lower()
 
     if ext in exts:
+        print (filename)
         return True
     return False    
 
@@ -37,10 +38,12 @@ def optimizer(image, size, extend_name):
         #  url to save to the database
         urlpath = str(request.url_root)[:-1] + filepath
 
+        print (urlpath)
+
         return urlpath
 
-    except Execption:
-        print(Excption)
+    except Execption as e:
+        print(e)
         
 
 def optimized():
@@ -57,6 +60,8 @@ def optimized():
         medium_image = optimizer(image, medium, '640px')
         large_image = optimizer(image, large, '768px')
         xlarge_image = optimizer(image, xlarge, '1080px')
+        print ('resized and saved')
+
         return thumbnail, small_image, medium_image, large_image, xlarge_image
     except Exception as e:
         print(e)
@@ -64,6 +69,9 @@ def optimized():
 
 def save(file):
     # saves file after verifying its an image file
-    if image_extension(file.filename):
+    if not file:
+        print("a file is required")
+        return
+    if image_extention(file.filename):
         return optimized(file)
-    return {"message": "not image"}    
+    return    
